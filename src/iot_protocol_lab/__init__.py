@@ -1,2 +1,1 @@
-"""MQTT/CoAP IoT protocol coursework project."""
-
+"""MQTT IoT protocol coursework project."""

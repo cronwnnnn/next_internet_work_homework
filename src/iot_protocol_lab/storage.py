@@ -7,7 +7,7 @@ from typing import Any
 from .config import DB_PATH
 
 
-# 在首次创建数据库或者每次查询时调用，以防数据库不存在
+# 首次运行时自动建表，之后重复调用也不会覆盖已有数据
 def init_db(db_path: Path = DB_PATH) -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(db_path) as conn:
@@ -61,6 +61,7 @@ def latest_by_sensor(db_path: Path = DB_PATH) -> list[dict[str, Any]]:
     init_db(db_path)
     with sqlite3.connect(db_path) as conn:
         conn.row_factory = sqlite3.Row
+        # 先按设备和传感器分组找最大 id，再取出每组最后收到的一条数据
         rows = conn.execute(
             """
             SELECT m.*
@@ -108,10 +109,9 @@ def summary_stats(db_path: Path = DB_PATH) -> dict[str, Any]:
             """
         ).fetchone()
     stats = dict(row)
-    # 防止返回none导致数据出错
+    # 数据库为空时函数会返回 None，将其转为 0 方便前端展示
     for key in ("avg_latency_ms", "min_latency_ms", "max_latency_ms"):
         stats[key] = round(stats[key] or 0.0, 3)
     stats["total_messages"] = stats["total_messages"] or 0
     stats["alert_count"] = stats["alert_count"] or 0
     return stats
-

@@ -14,7 +14,7 @@ from .config import MQTT_HOST, MQTT_PORT, MQTT_TOPIC_ROOT, SENSOR_TYPES
 def build_payload(device_id: str, sensor_type: str, qos: int) -> dict[str, object]:
     meta = SENSOR_TYPES[sensor_type]
     low, high = meta["normal"]
-    # 随机产生数据，并让8%概论发送的是预警值
+    # 大部分数据在正常范围内，少量用于测试告警显示
     if random.random() < 0.08:
         value = float(meta["alert_above"]) + random.uniform(0.5, 8.0)
     else:
@@ -45,6 +45,7 @@ def run_simulator(host: str, port: int, devices: int, interval: float, qos: int)
             for device_id in device_ids:
                 sensor_type = random.choice(sensor_types)
                 payload = build_payload(device_id, sensor_type, qos)
+                # Topic 中同时保留设备编号和传感器类型，订阅时订阅同一个设备的不同类型
                 topic = f"{MQTT_TOPIC_ROOT}/{device_id}/{sensor_type}"
                 client.publish(topic, json.dumps(payload), qos=qos)
                 print(f"{topic} -> {payload['value']}{payload['unit']}")
@@ -73,4 +74,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

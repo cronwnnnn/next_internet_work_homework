@@ -16,6 +16,7 @@ BROKER_CONFIG = {
     },
     "sys_interval": 10,
     "topic-check": {"enabled": False},
+    # 不使用账号来登录，匿名可访问
     "auth": {"allow-anonymous": True},
 }
 
@@ -25,6 +26,7 @@ async def run_broker() -> None:
     await broker.start()
     print(f"MQTT broker listening on {MQTT_HOST}:{MQTT_PORT}")
     try:
+        # Broker 启动后一直等待
         await asyncio.Event().wait()
     finally:
         await broker.shutdown()
@@ -36,4 +38,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

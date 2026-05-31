@@ -27,6 +27,7 @@ def start_mqtt_collector(host: str, port: int) -> mqtt.Client:
 
     def on_connect(client: mqtt.Client, userdata: Any, flags: Any, reason_code: Any, properties: Any) -> None:
         print(f"Dashboard connected to MQTT broker: {reason_code}")
+        # +匹配所有的设备编号和传感器类型
         client.subscribe(f"{MQTT_TOPIC_ROOT}/+/+", qos=2)
 
     def on_message(client: mqtt.Client, userdata: Any, message: mqtt.MQTTMessage) -> None:
@@ -36,6 +37,7 @@ def start_mqtt_collector(host: str, port: int) -> mqtt.Client:
             payload = json.loads(payload_text)
             sensor_type = str(payload["sensor_type"])
             value = float(payload["value"])
+            # 用发送和接收时间估算消息经 Broker 转发后的端到端延迟
             latency_ms = max(0.0, (received_at - float(payload["sent_at"])) * 1000)
             row = {
                 "received_at": received_at,
