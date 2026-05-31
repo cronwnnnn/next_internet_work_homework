@@ -7,9 +7,6 @@ MQTT_HOST = "127.0.0.1"
 MQTT_PORT = 1883
 MQTT_TOPIC_ROOT = "iot/lab"
 
-COAP_HOST = "127.0.0.1"
-COAP_PORT = 5683
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_ROOT / "data"
 DB_PATH = DATA_DIR / "iot_messages.db"
