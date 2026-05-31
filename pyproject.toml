@@ -1,0 +1,25 @@
+[project]
+name = "iot-protocol-lab"
+version = "0.1.0"
+description = "MQTT/CoAP IoT protocol analysis and implementation coursework project"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "aiocoap>=0.4.14",
+    "amqtt>=0.11.0",
+    "fastapi>=0.115.0",
+    "paho-mqtt>=2.1.0",
+    "uvicorn[standard]>=0.34.0",
+]
+
+[project.scripts]
+iot-mqtt-broker = "iot_protocol_lab.mqtt_broker:main"
+iot-mqtt-simulator = "iot_protocol_lab.mqtt_simulator:main"
+iot-dashboard = "iot_protocol_lab.dashboard:main"
+iot-coap-server = "iot_protocol_lab.coap_server:main"
+iot-coap-client = "iot_protocol_lab.coap_client:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
